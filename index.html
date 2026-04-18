@@ -1,1 +1,1698 @@
-<h1>Devdas OpenShift 🔥</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Clone</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #141414;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 60px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
+            transition: background 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: #141414;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #e50914;
+            letter-spacing: -1px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links li a {
+            color: #e5e5e5;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-links li a:hover {
+            color: #b3b3b3;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-icon {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .search-input {
+            background: rgba(0,0,0,0.75);
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 7px 14px 7px 35px;
+            font-size: 14px;
+            width: 0;
+            opacity: 0;
+            transition: all 0.4s ease;
+            outline: none;
+        }
+
+        .search-box.active .search-input {
+            width: 230px;
+            opacity: 1;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .profile-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #e50914, #b20710);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .dropdown-arrow {
+            font-size: 10px;
+            transition: transform 0.3s;
+        }
+
+        .profile-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #333;
+            border-radius: 2px;
+            padding: 10px 0;
+            min-width: 180px;
+            display: none;
+        }
+
+        .profile-dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu li {
+            padding: 8px 20px;
+            font-size: 13px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .dropdown-menu li:hover {
+            text-decoration: underline;
+        }
+
+        .dropdown-menu .divider {
+            border-top: 1px solid #444;
+            margin: 5px 0;
+            padding: 0;
+        }
+
+        /* ===== HERO / BILLBOARD ===== */
+        .hero {
+            position: relative;
+            height: 85vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,0.3) 0%,
+                rgba(0,0,0,0.1) 40%,
+                rgba(20,20,20,0.8) 85%,
+                #141414 100%
+            ),
+            url('https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=1920&q=80') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            padding: 0 60px;
+        }
+
+        .hero-content {
+            max-width: 550px;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .badge-n {
+            background: #e50914;
+            color: #fff;
+            font-weight: 900;
+            font-size: 18px;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .badge-text {
+            font-size: 14px;
+            color: #ccc;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-size: 58px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .hero-description {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #ddd;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 28px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-play {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-play:hover {
+            background: rgba(255,255,255,0.75);
+        }
+
+        .btn-info {
+            background: rgba(109, 109, 110, 0.7);
+            color: #fff;
+        }
+
+        .btn-info:hover {
+            background: rgba(109, 109, 110, 0.4);
+        }
+
+        .hero-maturity {
+            position: absolute;
+            right: 60px;
+            bottom: 35%;
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+
+        .maturity-rating {
+            background: rgba(51,51,51,0.6);
+            border-left: 3px solid #ddd;
+            padding: 5px 15px;
+            font-size: 14px;
+        }
+
+        /* ===== CONTENT ROWS ===== */
+        .content-section {
+            padding: 0 60px;
+            margin-top: -80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .content-row {
+            margin-bottom: 40px;
+        }
+
+        .row-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .row-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #e5e5e5;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .row-title .explore {
+            font-size: 12px;
+            color: #54b9c5;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(-10px);
+        }
+
+        .row-title:hover .explore {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            gap: 6px;
+            transition: transform 0.6s ease;
+            will-change: transform;
+        }
+
+        .card {
+            min-width: 240px;
+            height: 135px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, z-index 0.3s;
+            flex-shrink: 0;
+        }
+
+        .card:hover {
+            transform: scale(1.4);
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            transition-delay: 0.3s;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.95));
+            padding: 30px 10px 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover .card-overlay {
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        .card-buttons {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .card-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            border: 1.5px solid rgba(255,255,255,0.5);
+            background: rgba(42,42,42,0.6);
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .card-btn:hover {
+            border-color: #fff;
+            background: rgba(42,42,42,0.9);
+        }
+
+        .card-btn.play-btn {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+        }
+
+        .match {
+            color: #46d369;
+            font-weight: 700;
+        }
+
+        .age-badge {
+            border: 1px solid #888;
+            padding: 0 5px;
+            font-size: 9px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 5px;
+            font-size: 9px;
+            color: #aaa;
+            margin-top: 4px;
+        }
+
+        .card-tags span::before {
+            content: "• ";
+            color: #666;
+        }
+
+        .card-tags span:first-child::before {
+            content: "";
+        }
+
+        /* Slider navigation arrows */
+        .slider-btn {
+            position: absolute;
+            top: 0;
+            width: 55px;
+            height: 100%;
+            background: rgba(20,20,20,0.7);
+            border: none;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-container:hover .slider-btn {
+            opacity: 1;
+        }
+
+        .slider-btn:hover {
+            background: rgba(20,20,20,0.9);
+        }
+
+        .slider-btn.left {
+            left: 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .slider-btn.right {
+            right: 0;
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* ===== TOP 10 ROW ===== */
+        .top10-card {
+            min-width: 240px;
+            height: 165px;
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .top10-number {
+            font-size: 140px;
+            font-weight: 900;
+            line-height: 1;
+            color: transparent;
+            -webkit-text-stroke: 3px #808080;
+            margin-right: -25px;
+            z-index: 1;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .top10-poster {
+            width: 120px;
+            height: 165px;
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .top10-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 60px 60px 40px;
+            color: #808080;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .footer-social a {
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .footer-links a {
+            color: #808080;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #ccc;
+            text-decoration: underline;
+        }
+
+        .service-code {
+            display: inline-block;
+            border: 1px solid #808080;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #808080;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #555;
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* ===== PREVIEW MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            padding-top: 30px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #181818;
+            width: 95%;
+            max-width: 850px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #181818;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-hero {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(to bottom, transparent 60%, #181818 100%),
+                url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=900&q=80') center center/cover;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px 40px;
+        }
+
+        .modal-hero-content {
+            max-width: 400px;
+        }
+
+        .modal-hero-title {
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .modal-hero-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-body {
+            padding: 20px 40px 40px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .modal-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .modal-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .modal-info p {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .modal-info span {
+            color: #ddd;
+        }
+
+        /* ===== LOADING ANIMATION ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            font-size: 60px;
+            font-weight: 900;
+            color: #e50914;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .navbar { padding: 15px 30px; }
+            .hero { padding: 0 30px; height: 75vh; }
+            .hero-title { font-size: 42px; }
+            .content-section { padding: 0 30px; }
+            .footer { padding: 40px 30px; }
+            .footer-links { grid-template-columns: repeat(3, 1fr); }
+            .card { min-width: 200px; height: 113px; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .navbar { padding: 10px 20px; }
+            .hero { padding: 0 20px; height: 65vh; }
+            .hero-title { font-size: 32px; }
+            .hero-description { font-size: 14px; }
+            .hero-maturity { display: none; }
+            .content-section { padding: 0 20px; margin-top: -40px; }
+            .card { min-width: 150px; height: 85px; }
+            .row-title { font-size: 18px; }
+            .footer { padding: 30px 20px; }
+            .footer-links { grid-template-columns: repeat(2, 1fr); }
+            .btn { padding: 8px 18px; font-size: 14px; }
+            .modal-body { grid-template-columns: 1fr; }
+            .modal-hero { height: 250px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 26px; }
+            .hero-description { display: none; }
+            .card { min-width: 120px; height: 68px; }
+            .logo { font-size: 22px; }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #141414;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">NETFLIX</div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-left">
+            <div class="logo">NETFLIX</div>
+            <ul class="nav-links">
+                <li><a href="#" class="active" style="color:#fff; font-weight:700;">Home</a></li>
+                <li><a href="#">TV Shows</a></li>
+                <li><a href="#">Movies</a></li>
+                <li><a href="#">New & Popular</a></li>
+                <li><a href="#">My List</a></li>
+                <li><a href="#">Browse by Languages</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+        <div class="navbar-right">
+            <div class="search-box" id="searchBox">
+                <span class="search-icon" onclick="toggleSearch()">🔍</span>
+                <input type="text" class="search-input" placeholder="Titles, people, genres" id="searchInput">
+            </div>
+            <span class="notification-icon">🔔</span>
+            <div class="profile-dropdown">
+                <div class="profile-img">U</div>
+                <span class="dropdown-arrow">▼</span>
+                <ul class="dropdown-menu">
+                    <li>👤 Profile 1</li>
+                    <li>👤 Profile 2</li>
+                    <li>🧒 Kids</li>
+                    <li>✏️ Manage Profiles</li>
+                    <li>🔄 Transfer Profile</li>
+                    <li class="divider"></li>
+                    <li>⚙️ Account</li>
+                    <li>❓ Help Center</li>
+                    <li class="divider"></li>
+                    <li>🚪 Sign out of Netflix</li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-n">N</span>
+                <span class="badge-text">S E R I E S</span>
+            </div>
+            <h1 class="hero-title">Stranger Things</h1>
+            <p class="hero-description">
+                When a young boy vanishes, a small town uncovers a mystery involving 
+                secret experiments, terrifying supernatural forces and one strange little girl.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-play" onclick="alert('Playing...')">▶ Play</button>
+                <button class="btn btn-info" onclick="openModal()">ℹ More Info</button>
+            </div>
+        </div>
+        <div class="hero-maturity">
+            <span class="maturity-rating">TV-14</span>
+        </div>
+    </section>
+
+    <!-- CONTENT ROWS -->
+    <div class="content-section">
+
+        <!-- Row 1: Trending Now -->
+        <div class="content-row">
+            <div class="row-header">
+                <h2 class="row-title">
+                    Trending Now
+                    <span class="explore">Explore All ›</span>
+                </h2>
+            </div>
+            <div class="slider-container">
+                <button class="slider-btn left" onclick="slide(this, -1)">‹</button>
+                <div class="slider" id="slider1">
+                    <div class="card" onclick="openModal()">
+                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">98% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>2h 15m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Suspenseful</span>
+                                <span>Sci-Fi</span>
+                                <span>Thriller</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">95% Match</span>
+                                <span class="age-badge">PG-13</span>
+                                <span>1h 52m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Drama</span>
+                                <span>Emotional</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">92% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 30m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Action</span>
+                                <span>Adventure</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">89% Match</span>
+                                <span class="age-badge">TV-14</span>
+                                <span>3 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Dark</span>
+                                <span>Horror</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">96% Match</span>
+                                <span class="age-badge">PG</span>
+                                <span>1h 45m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Comedy</span>
+                                <span>Feel-Good</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">91% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>5 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Crime</span>
+                                <span>Drama</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1518676590747-1e3dcf5a4e27?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">87% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 5m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Romance</span>
+                                <span>Drama</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn right" onclick="slide(this, 1)">›</button>
+            </div>
+        </div>
+
+        <!-- Row 2: Top 10 in Your Country -->
+        <div class="content-row">
+            <div class="row-header">
+                <h2 class="row-title">
+                    Top 10 in Your Country Today
+                    <span class="explore">Explore All ›</span>
+                </h2>
+            </div>
+            <div class="slider-container">
+                <button class="slider-btn left" onclick="slide(this, -1)">‹</button>
+                <div class="slider">
+                    <div class="top10-card">
+                        <span class="top10-number">1</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">2</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1611419010196-b67c5907dc5c?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">3</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1635805737707-575885ab0820?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">4</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">5</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">6</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">7</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                    <div class="top10-card">
+                        <span class="top10-number">8</span>
+                        <div class="top10-poster">
+                            <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=200&q=80" alt="">
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn right" onclick="slide(this, 1)">›</button>
+            </div>
+        </div>
+
+        <!-- Row 3: Popular on Netflix -->
+        <div class="content-row">
+            <div class="row-header">
+                <h2 class="row-title">
+                    Popular on Netflix
+                    <span class="explore">Explore All ›</span>
+                </h2>
+            </div>
+            <div class="slider-container">
+                <button class="slider-btn left" onclick="slide(this, -1)">‹</button>
+                <div class="slider">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">94% Match</span>
+                                <span class="age-badge">TV-14</span>
+                                <span>2 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Fantasy</span>
+                                <span>Epic</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">90% Match</span>
+                                <span class="age-badge">PG-13</span>
+                                <span>1h 58m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Thriller</span>
+                                <span>Mystery</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">88% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 22m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>War</span>
+                                <span>Historical</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">93% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>4 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Crime</span>
+                                <span>Gritty</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1509281373149-e957c6296406?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">85% Match</span>
+                                <span class="age-badge">PG</span>
+                                <span>1h 35m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Animation</span>
+                                <span>Family</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">97% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>6 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Sci-Fi</span>
+                                <span>Mind-Bending</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1460881680858-30d872d5b530?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">86% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 10m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Documentary</span>
+                                <span>True Crime</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn right" onclick="slide(this, 1)">›</button>
+            </div>
+        </div>
+
+        <!-- Row 4: New Releases -->
+        <div class="content-row">
+            <div class="row-header">
+                <h2 class="row-title">
+                    New Releases
+                    <span class="explore">Explore All ›</span>
+                </h2>
+            </div>
+            <div class="slider-container">
+                <button class="slider-btn left" onclick="slide(this, -1)">‹</button>
+                <div class="slider">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">91% Match</span>
+                                <span class="age-badge">TV-14</span>
+                                <span>1h 48m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Drama</span>
+                                <span>Heartfelt</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1518676590747-1e3dcf5a4e27?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">88% Match</span>
+                                <span class="age-badge">PG-13</span>
+                                <span>2h 1m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Action</span>
+                                <span>Exciting</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">95% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 15m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Thriller</span>
+                                <span>Dark</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">89% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>1 Season</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Horror</span>
+                                <span>Supernatural</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">93% Match</span>
+                                <span class="age-badge">PG</span>
+                                <span>1h 42m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Comedy</span>
+                                <span>Witty</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">86% Match</span>
+                                <span class="age-badge">TV-14</span>
+                                <span>3 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Romance</span>
+                                <span>Steamy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">92% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 33m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Sci-Fi</span>
+                                <span>Dystopian</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn right" onclick="slide(this, 1)">›</button>
+            </div>
+        </div>
+
+        <!-- Row 5: Watch It Again -->
+        <div class="content-row">
+            <div class="row-header">
+                <h2 class="row-title">
+                    Watch It Again
+                    <span class="explore">Explore All ›</span>
+                </h2>
+            </div>
+            <div class="slider-container">
+                <button class="slider-btn left" onclick="slide(this, -1)">‹</button>
+                <div class="slider">
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1460881680858-30d872d5b530?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">97% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>5 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Crime</span>
+                                <span>Intense</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">90% Match</span>
+                                <span class="age-badge">PG-13</span>
+                                <span>2h 8m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Adventure</span>
+                                <span>Fantasy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">94% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>1h 55m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Psychological</span>
+                                <span>Thriller</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">88% Match</span>
+                                <span class="age-badge">TV-14</span>
+                                <span>2 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Drama</span>
+                                <span>Political</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1595769816263-9b910be24d5f?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">91% Match</span>
+                                <span class="age-badge">PG</span>
+                                <span>1h 38m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Animation</span>
+                                <span>Heartwarming</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1616530940355-351fabd9524b?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">85% Match</span>
+                                <span class="age-badge">TV-MA</span>
+                                <span>3 Seasons</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Docuseries</span>
+                                <span>Nature</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://images.unsplash.com/photo-1611419010196-b67c5907dc5c?w=400&q=80" alt="Movie">
+                        <div class="card-overlay">
+                            <div class="card-buttons">
+                                <button class="card-btn play-btn">▶</button>
+                                <button class="card-btn">+</button>
+                                <button class="card-btn">👍</button>
+                                <button class="card-btn" style="margin-left:auto;">▼</button>
+                            </div>
+                            <div class="card-meta">
+                                <span class="match">96% Match</span>
+                                <span class="age-badge">R</span>
+                                <span>2h 45m</span>
+                            </div>
+                            <div class="card-tags">
+                                <span>Epic</span>
+                                <span>Visually Stunning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="slider-btn right" onclick="slide(this, 1)">›</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-social">
+            <a href="#">📘</a>
+            <a href="#">📸</a>
+            <a href="#">🐦</a>
+            <a href="#">📺</a>
+        </div>
+        <div class="footer-links">
+            <a href="#">Audio Description</a>
+            <a href="#">Help Center</a>
+            <a href="#">Gift Cards</a>
+            <a href="#">Media Center</a>
+            <a href="#">Investor Relations</a>
+            <a href="#">Jobs</a>
+            <a href="#">Terms of Use</a>
+            <a href="#">Privacy</a>
+            <a href="#">Legal Notices</a>
+            <a href="#">Cookie Preferences</a>
+            <a href="#">Corporate Information</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Ad Choices</a>
+            <a href="#">Speed Test</a>
+            <a href="#">Legal Guarantee</a>
+            <a href="#">Only on Netflix</a>
+        </div>
+        <div class="service-code">Service Code</div>
+        <p class="copyright">© 2024 Netflix Clone. For educational purposes only.</p>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModalDirect()">✕</button>
+            <div class="modal-hero">
+                <div class="modal-hero-content">
+                    <h2 class="modal-hero-title">Stranger Things</h2>
+                    <div class="modal-hero-buttons">
+                        <button class="btn btn-play">▶ Play</button>
+                        <button class="card-btn" style="width:38px;height:38px;font-size:16px;">+</button>
+                        <button class="card-btn" style="width:38px;height:38px;font-size:16px;">👍</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="modal-meta">
+                        <span class="match">98% Match</span>
+                        <span>2024</span>
+                        <span class="age-badge" style="padding:2px 8px;">TV-14</span>
+                        <span>4 Seasons</span>
+                        <span style="border:1px solid #888;padding:0 6px;font-size:11px;border-radius:2px;">HD</span>
+                    </div>
+                    <p class="modal-description">
+                        When a young boy vanishes, a small town uncovers a mystery involving 
+                        secret experiments, terrifying supernatural forces and one strange little girl. 
+                        As the search for answers leads to more questions, the residents of Hawkins, Indiana 
+                        must confront the horrors lurking beneath the surface of their seemingly normal town.
+                    </p>
+                </div>
+                <div class="modal-info">
+                    <p>Cast: <span>Millie Bobby Brown, Finn Wolfhard, Winona Ryder, David Harbour</span></p>
+                    <p>Genres: <span>Sci-Fi, Horror, Drama, Supernatural</span></p>
+                    <p>This show is: <span>Suspenseful, Exciting, Scary</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hide');
+            }, 1500);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Search toggle
+        function toggleSearch() {
+            const searchBox = document.getElementById('searchBox');
+            searchBox.classList.toggle('active');
+            if (searchBox.classList.contains('active')) {
+                document.getElementById('searchInput').focus();
+            }
+        }
+
+        // Slider functionality
+        function slide(button, direction) {
+            const container = button.parentElement;
+            const slider = container.querySelector('.slider');
+            const cardWidth = slider.querySelector('.card, .top10-card').offsetWidth + 6;
+            const visibleCards = Math.floor(container.offsetWidth / cardWidth);
+            const scrollAmount = cardWidth * visibleCards;
+
+            const currentTransform = getComputedStyle(slider).transform;
+            let currentX = 0;
+
+            if (currentTransform !== 'none') {
+                const matrix = new DOMMatrix(currentTransform);
+                currentX = matrix.m41;
+            }
+
+            const maxScroll = -(slider.scrollWidth - container.offsetWidth);
+            let newX = currentX + (direction === 1 ? -scrollAmount : scrollAmount);
+
+            newX = Math.min(0, Math.max(maxScroll, newX));
+
+            slider.style.transform = `translateX(${newX}px)`;
+        }
+
+        // Modal
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            if (event.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function closeModalDirect() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Keyboard escape to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModalDirect();
+            }
+        });
+
+        // Smooth row hover effect - delay card expansion
+        document.querySelectorAll('.card').forEach(card => {
+            let timeout;
+            card.addEventListener('mouseenter', () => {
+                timeout = setTimeout(() => {
+                    card.style.transitionDelay = '0s';
+                }, 300);
+            });
+            card.addEventListener('mouseleave', () => {
+                clearTimeout(timeout);
+                card.style.transitionDelay = '0s';
+            });
+        });
+    </script>
+
+</body>
+</html>

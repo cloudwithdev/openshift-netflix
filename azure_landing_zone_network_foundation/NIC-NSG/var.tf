@@ -1,0 +1,5 @@
+
+
+variable "nic_nsg" {
+  
+}
